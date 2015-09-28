@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * Make sure we can get to our array of variables.
+ */
+if(!module_exists("local")){
+  module_load_include("inc", "local", "inc/local.vars");
+}
+
+/**
+ * Implements hook_install().
+ */
+function local_install(){
+  _local_variables_flush();
+
+  cache_clear_all();
+}
+
+/**
+ * Implements hook_unintsall().
+ */
+function local_uninstall(){
+  _local_variables_flush();
+
+  cache_clear_all();
+}

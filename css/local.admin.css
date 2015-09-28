@@ -1,0 +1,25 @@
+#edit-place{clear:both}
+
+#locationField{float:left}
+
+#gplace{
+  min-width:208px;
+  min-height:208px;
+  background-image:none;
+  float:right
+}
+
+#gplace.loading{background:#fff url(../img/spinner.gif) no-repeat center}
+
+input.autocompleted{
+  color:#465;
+  border:solid 1px #acb;
+  background:#dfe
+}
+
+#place{
+  height:480px;
+  clear:left
+}
+
+#gplace-photos{clear:both}

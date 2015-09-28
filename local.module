@@ -1,0 +1,72 @@
+<?php
+
+if(!function_exists("local_menu")){
+  module_load_include("inc", "local", "inc/local.menu");
+}
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function local_preprocess_html(&$variables){
+
+  return $variables;
+}
+
+function _local_autocomplete_hours($str = ""){
+  $hours = array(
+    "12:00 am" => "0000",
+    "12:30 am" => "0030",
+  );
+
+  for($i=1;$i<24;$i++){
+    $h = ($i<10) ? "0$i" : $i;
+    $p = ($i>12) ? "pm" : "am";
+
+    $g = $i; // keep $i clean
+    $g = ($g>12) ? $g-12 : $g;
+
+    $j = "$g:00 $p";
+    $k = $h."00";
+    $l = "$g:30 $p";
+    $m = $h."30";
+
+    $hours[$j] = $k;
+    $hours[$l] = $m;
+  }
+
+  return drupal_json_output(preg_grep("/{$str}/i", array_flip($hours)));
+}
+
+function local_logo_render($fid=FALSE,$attributes = array()){
+  $fid      = (!$fid) ? variable_get("local_logo", FALSE) : $fid;
+  $entities = entity_load("file", array($fid));
+  $entity   = $entities[$fid];
+  $path     = file_create_url($entity->uri);
+  
+  return theme_image(array(
+    "path"   => $path,
+    "width"  => $entity->width,
+    "height" => $entity->height,
+    "alt"    => $entity->alt,
+    "title"  => $entity->title,
+    "attributes" => $attributes,
+  ));
+}
+
+if(!function_exists("_local_variables_get_array")){
+  module_load_include("inc", "local", "inc/local.vars");
+}
+
+function _local_maker_get_fb_page_photo($data=null){
+  $data=$_GET; unset($data["q"]);
+  
+  if(count($data)>0){
+    $path=drupal_get_path("module", "local");
+    $file="$path/debug.json";
+    $json=json_encode($data, JSON_PRETTY_PRINT);
+
+    if(file_exists($file) && is_writeable($file)){
+      file_put_contents($file, file_get_contents($file)."$json\n");
+    }
+  }
+}
